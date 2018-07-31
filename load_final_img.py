@@ -1,8 +1,8 @@
 import face_recognition
-import cv2
 import glob
 import pandas as pd
 import pickle
+from PIL import Image
 import numpy as np
 from tempfile import TemporaryFile
 
@@ -19,10 +19,14 @@ known_face_encodings =faces_encoding
 
 
 # Grab a single frame of video
-frame = cv2.imread('Search_by_image/prakhar_ask.jpeg')
+frame = Image.open('prakhar_ask.jpeg')
 
 # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
-rgb_frame = frame[:, :, ::-1]
+b, g, r = frame.split()
+rgb_frame= Image.merge("RGB", (r, g, b))
+
+rgb_frame = np.array(rgb_frame)
+#print(pix.shape)
 
 # Find all the faces and face enqcodings in the frame of video
 face_locations = face_recognition.face_locations(rgb_frame)
@@ -33,12 +37,7 @@ for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodi
   # See if the face is a match for the known face(s)
   matches = face_recognition.compare_faces(known_face_encodings, face_encoding,tolerance=0.508)
 
-  # Draw a box around the face
-  cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-  # Draw a label with a name below the face
-  cv2.rectangle(frame, (left, bottom + 35), (right, bottom), (0,0, 200), cv2.FILLED)
-  font = cv2.FONT_HERSHEY_DUPLEX
-  
+
   print('MATCHES-FOUND-WITH:')
 
   total=0
@@ -51,15 +50,7 @@ for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodi
           roll=str(person[known_face_names[i]][0])
           x_co=left
           y_co=bottom+10+total*33
-          cv2.putText(frame, name, (x_co,y_co), font, 0.36, (0, 255,0), 1)
-          cv2.putText(frame, roll, (x_co,y_co+15), font, 0.36, (0, 255,0), 1)
           total=total+1
 
                 
 
-while True:
- cv2.imshow('Video', frame)
- if cv2.waitKey(1) & 0xFF == ord('q'):
-   break
-
-cv2.destroyAllWindows()
