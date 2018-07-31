@@ -1,5 +1,4 @@
 face_recognition
 pandas
-pickle==2
+pickle
 PIL
-numpy
