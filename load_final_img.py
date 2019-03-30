@@ -6,6 +6,9 @@ from PIL import Image
 import numpy as np
 from tempfile import TemporaryFile
 
+permi_error_percent=int(input())
+image_name=str(input())
+image_name=str('p.JPEG')
 
 known_face_names=np.load('outfile.npy')
 known_face_encodings=[]
@@ -19,7 +22,7 @@ known_face_encodings =faces_encoding
 
 
 # Grab a single frame of video
-frame = Image.open('prakhar_ask.jpeg')
+frame = Image.open('./'+image_name)
 
 # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
 b, g, r = frame.split()
@@ -35,7 +38,7 @@ face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 # Loop through each face in this frame of video
 for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
   # See if the face is a match for the known face(s)
-  matches = face_recognition.compare_faces(known_face_encodings, face_encoding,tolerance=0.508)
+  matches = face_recognition.compare_faces(known_face_encodings, face_encoding,tolerance=permi_error_percent/100.0)
 
 
   print('MATCHES-FOUND-WITH:')

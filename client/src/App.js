@@ -1,87 +1,258 @@
-import React from "react";
+import React, { Component } from 'react';
+import './App.css';
 import FileUpload from './FileUpload'
+import  { post } from 'axios';
+import bg from './images/backgroundImage.png'
 import Linkedin from './Linkedin'
-class App extends React.Component {
-    constructor(props){
-        super(props);
-        this.myRef = React.createRef()
-    }
+import Modal from "react-responsive-modal";
 
-    render() {
-        return (
-            <div className="App">
-                <div style = {styles.heading}>
-                    
-                    <h1>
-                        Randomized Weight Calculator
-                    </h1>
-                    <div>
-                        Tired of calculating weights. Use our service to generate a determining equation for your problem.
-                    </div>
-                    <div style={{background:'#1e1e1e',padding:10,margin:10,borderRadius:10}}>
-                        <ul style={{listStyleType:'none',padding:'10px 20px ', textAlign:'left'}}>
-                            <li>1. Upload your file in CSV format. First Column should have Actual Value ( See sample file below).</li>
-                            <li>2. Fill your email id on which you want the results to be mailed.</li>
-                            <li>3. You can also specify weight range for each feature but make sure you follow the given sample file. After uploading file, uncheck the checkbox in file preview.</li>
-                        </ul>
-                        <button 
-                            style={{
-                                padding:10,
-                                background:'#4C4B4B',
-                                color:'white',
-                                cursor:'pointer',
-                                borderRadius:'5px'
-                            }}
-                            onClick={() => this.messagesEnd.scrollIntoView({ behavior: "smooth" })}>
-                            Contact us for any queries
-                        </button>
-                    </div>
-                </div>
-               <FileUpload/>
-               <div style={{textAlign:'center',background:'#586776',padding:'25px',borderRadius:'10px'}}>
-                <h2
-                    style={{color:'#ffffff',fontFamily:'roboto'}}
-                    >
-                    Sample File 
-                    <a style = {{color:'#fff',marginLeft:5,textDecoration:'none',border:'1px dashed gray',padding:5,borderRadius:10}} href="https://docs.google.com/spreadsheets/d/1uWuxeQmtIZMEtbbj__xYOMmS9smsbmPWHZGD2ZT3qzw/export?format=csv" download>Download</a>
-                </h2>
-                <iframe 
-                title = {"Sample File"}
-                    style={{height:'50vh',width:'80vw',border:'0px',borderRadius:'10px'}}
-                    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vStSMxRFDxDlDoZH8ijol4vKODN3-ueOYmjLYlUlxjKoO3yzQCYvllyXPazxoBM_g5Jcz9lMuLa4zht/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false">
-                    </iframe>
-                </div>
-                <h1 style={{
-                    margin:'30px auto', textAlign:'center',
-                    fontFamily:'roboto',color:'#2B2B52'
-                }}
-                >Developed By</h1>
-                <div 
+class App extends Component {
+  constructor(props){
+    super(props);
+    this.initialState={
+      elements:[],
+      disabled:true,
+      input:'',
+      buttonText:'Add class',
+      count:0,
+      email:'',
+      width:500,
+      height:500,
+      open:false
+    }
+    this.state = this.initialState;
+    this.handleFieldChange = this.handleFieldChange.bind(this);
+    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+    this.renderFileBrowse = this.renderFileBrowse.bind(this);
+    this.renderFileUpload = this.renderFileUpload.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.fileUpload = this.fileUpload.bind(this);
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handleWidthChange = this.handleWidthChange.bind(this);
+    this.handleHeightChange = this.handleHeightChange.bind(this);
+    this.onOpenModal=this.onOpenModal.bind(this);
+    this.onCloseModal=this.onCloseModal.bind(this);
+  }
+  onOpenModal = () => {
+    this.setState({ open: true });
+  };
+
+  onCloseModal = () => {
+    this.setState({ open: false });
+  };
+  handleFieldChange(fieldId, value) {
+    // var {elements} = this.state;  
+    this.setState({[fieldId]:value});  
+    var count = 0
+    this.state.elements.forEach((item)=>{
+      if(this.state[item])
+        count+=this.state[item].length
+    })
+    this.setState({count})
+  }
+
+  handleAddButtonClick(){
+    var {elements,input} = this.state;
+    this.setState({elements:[...elements,input],input:'',disabled:true})
+  }
+
+  handleChange(event) {
+    if(this.state.elements.indexOf(event.target.value)!==-1){
+      this.setState({input: event.target.value,disabled:true,buttonText:'Class Already Exists'});
+    }
+    else{
+      this.setState({input: event.target.value,disabled:event.target.value === '',buttonText:'Add class'});
+    }
+    
+  }
+  handleEmailChange(event){
+    this.setState({email:event.target.value})
+  }
+  handleWidthChange(event){
+    this.setState({width:event.target.value})
+  }
+  handleHeightChange(event){
+    this.setState({height:event.target.value})
+  }
+  renderFileBrowse(){
+    return(
+      <div className="App">
+          {this.state.elements.map(
+            (item,key)=>this.renderFileUpload(item,key)
+          )}
+      </div>
+    )
+  }
+  renderFileUpload(k,key){
+    return (
+       <FileUpload
+            id={k}
+            key={key}
+            onChange={this.handleFieldChange}
+        />      
+    )
+  }
+  handleSubmit(event) {
+    //console.log(this.state);
+    event.preventDefault();
+    this.onOpenModal();
+    this.fileUpload().then((response)=>{
+      console.log('Response is: \n'+ response.data);
+    })
+  }
+
+  fileUpload(){
+    const url = '/submit';
+    const formData = new FormData();
+    this.state.elements.forEach((item)=>{
+      if(this.state[item]){
+        this.state[item].forEach((inneritem)=>{
+          var newName = item+"$"+inneritem.name
+          var newFile =new File([inneritem],newName)
+          formData.append('files',newFile);
+        })
+      }
+    })
+
+    formData.append('email',this.state.email);
+    formData.append('height',this.state.height);
+    formData.append('width',this.state.width);
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    }
+    return  post(url, formData,config)
+  }
+
+  render() {
+    var button1,button2
+    if(this.state.disabled)
+      button1 = {...styles.button,...styles.notAllowed}
+    else
+      button1 = styles.button
+
+    if(this.state.count>10 || this.state.count===0)
+      button2 = {...styles.button,...styles.notAllowed}
+    else
+      button2 = styles.button
+    return (
+      <div style={{textAlign:'center',background:`url(${bg})`,backgroundSize:'cover',paddingBottom:100,paddingTop:50}}>
+        <div style={styles.glowingText}>
+            Image Fefature Extractor
+        </div>
+               
+        
+        <div style={styles.form}>
+        {this.renderFileBrowse()}
+          <input type="text" 
+            value={this.state.input} 
+            onChange={this.handleChange} 
+            style={styles.input}
+            placeholder="           Enter Class Name"
+          />
+          <button disabled={ this.state.disabled } 
+              onClick={this.handleAddButtonClick}
+              style={button1}
+              >
+            {this.state.buttonText}
+          </button>
+          <br/>
+          File Count: {this.state.count}/10
+          <br/>
+          <br/>
+          <label style={styles.label}>
+            All ]ill be resized tok some dimensions. Enter dimensions in Pixel(px)
+          </label>
+          <br/>
+          <br/>
+          <label style={styles.label}>permissible error: </label>
+          <input type="number" value={this.state.width} onChange={this.handleWidthChange} style={{...styles.input,...{width:120}}} required={true}/>
+          <label style={styles.label}>Height: </label>
+          <input type="number" value={this.state.height} onChange={this.handleHeightChange} style={{...styles.input,...{width:120}}} required={true}/>
+          <br/>
+          <form onSubmit={this.handleSubmit} method='post'>
+            <label style={styles.label}>Email: </label>
+            <input type="email" value={this.state.email} onChange={this.handleEmailChange} style={styles.input} required={true}/>
+            <button disabled={ this.state.count>10 || this.state.count===0} type="submit" style={button2}>
+              {this.state.count>10 ? "Max 10 files":"Submit"}
+            </button>
+        </form>
+        </div>
+        <h1 style={{color:'#333333',fontFamily:'roboto',textShadow:'2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15)'}}>Developed By</h1>
+        <div style={{display:'flex',flexDirection:'row,display:',justifyContent:'space-evenly',paddingTop:50,flexWrap:'wrap'}}>
+          <Linkedin username='prakhartiet' profilename='Prakhar Gupta' datatype='vertical' email='pgupta7_be16@thapar.edu'/>
+          <Linkedin username='jainhere' profilename='Nikhil Jain' datatype='vertical' email='njain_be16@thapar.edu'/>
+          {/* <Linkedin username='prashant-singh-rana-6b089513' profilename='Dr. Prashant S Rana' datatype='vertical' email='prashant.singh@thapar.edu'/> */}
+        </div>
+        <Modal 
+              open={this.state.open} 
+              onClose={this.onCloseModal} 
+              onExited = {()=> this.setState(this.initialState)}
+              center>
+              <div
                 style={{
+                  fontFamily:'roboto',
+                  fontSize:20,
+                  marginTop:50
+                }}
+              >Thank you for using our web service. Results will be mailed to {this.state.email}</div>
+              <div style={{
                     display:'flex',flexDirection:'row',justifyContent:'space-evenly',
                     paddingTop:50,flexWrap:'wrap'
-                    
                 }}>
-                    <Linkedin username='prakhartiet' profilename='Prakhar Gupta' datatype='vertical' email='pgupta7_be16@thapar.edu'/>
-                    <Linkedin username='jainhere' profilename='Nikhil Jain' datatype='vertical' email='njain_be16@thapar.edu'/>
-                    <Linkedin username='prabhjot-singh-715013146' profilename='Prabhjot Singh' datatype='vertical' email='psingh4_be16@thapar.edu'/>
                 </div>
-                <div ref={(el) => { this.messagesEnd = el }}/>
-                
-                
-            </div>
-        );
-    }
+            </Modal> 
+      </div>
+    );
+  }
 }
+
 const styles = {
-    heading:{
-        textAlign:'center',
-        backgroundColor:'#2F363F',
-        margin:5,
-        padding:10,
-        borderRadius:10,
-        fontFamily: 'Roboto',
-        color:'#ffffff'
-    }
+  input:{
+    border:'none',
+    borderBottom:'1px dashed #83A4C5',
+    margin:'10px 3px',    
+    fontStyle:'italic',
+    width:250,
+    background:'transparent',
+    fontFamily:'roboto',
+    fontSize:20,
+    color:'#1e1e1e'
+  },
+  label:{
+    fontSize:20,
+    fontFamily:'roboto'
+  },
+  button:{
+    padding:'7px 30px',
+    fontFamily:'roboto',
+    borderRadius:'10px',
+    marginLeft:'5px',
+    fontSize:15,
+    margin:'10px 3px',
+    cursor:'pointer',
+  },
+  notAllowed:{
+    cursor:'not-allowed'
+  },
+  form:{
+    background:'rgb(255,255,255,0.7)',
+    paddingTop:30,
+    paddingBottom:30,
+    margin:'0 10px',
+    borderRadius:10
+  },
+  glowingText:{
+    color:'rgb(99, 54, 38)',
+    background: '#333333',
+    textShadow:'0 -1px 4px #FFF, 0 -2px 10px #ff0, 0 -10px 20px #ff8000, 0 -18px 40px #F00',
+    fontFamily:'roboto',
+    fontSize:50,
+    margin:30,
+    padding:30,
+    borderRadius:10
+  }
 }
 export default App;

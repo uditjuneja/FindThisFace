@@ -1,0 +1,1 @@
+This file is kept only to keep something inside target directory.
