@@ -22,7 +22,7 @@ class FileUpload extends Component {
         <div style={{textAlign:'center',flex: '1',minWidth:'45vw',padding:15}}>
             <h1>{this.props.id}</h1>
             <FilePond ref={ref => this.pond = ref}
-                allowMultiple={true}
+                allowMultiple={false}
                 acceptedFileTypes={['image/*']}
                 onupdatefiles={(fileItems) => {
                 // Set current file objects to this.state
