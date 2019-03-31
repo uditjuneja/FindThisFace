@@ -22,7 +22,7 @@ known_face_encodings =faces_encoding
 
 
 # Grab a single frame of video
-frame = Image.open('./'+image_name)
+frame = Image.open('./target/'+image_name)
 
 # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
 b, g, r = frame.split()
