@@ -12,25 +12,19 @@ class App extends Component {
     this.initialState={
       elements:[],
       disabled:true,
-      input:'',
       buttonText:'Add class',
       count:0,
       email:'',
-      width:500,
-      height:500,
+      width:50,
       open:false
     }
     this.state = this.initialState;
     this.handleFieldChange = this.handleFieldChange.bind(this);
-    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
-    this.renderFileBrowse = this.renderFileBrowse.bind(this);
     this.renderFileUpload = this.renderFileUpload.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handleWidthChange = this.handleWidthChange.bind(this);
-    this.handleHeightChange = this.handleHeightChange.bind(this);
     this.onOpenModal=this.onOpenModal.bind(this);
     this.onCloseModal=this.onCloseModal.bind(this);
   }
@@ -52,43 +46,18 @@ class App extends Component {
     this.setState({count})
   }
 
-  handleAddButtonClick(){
-    var {elements,input} = this.state;
-    this.setState({elements:[...elements,input],input:'',disabled:true})
-  }
-
-  handleChange(event) {
-    if(this.state.elements.indexOf(event.target.value)!==-1){
-      this.setState({input: event.target.value,disabled:true,buttonText:'Class Already Exists'});
-    }
-    else{
-      this.setState({input: event.target.value,disabled:event.target.value === '',buttonText:'Add class'});
-    }
-    
-  }
   handleEmailChange(event){
     this.setState({email:event.target.value})
   }
   handleWidthChange(event){
     this.setState({width:event.target.value})
   }
-  handleHeightChange(event){
-    this.setState({height:event.target.value})
-  }
-  renderFileBrowse(){
-    return(
-      <div className="App">
-          {this.state.elements.map(
-            (item,key)=>this.renderFileUpload(item,key)
-          )}
-      </div>
-    )
-  }
-  renderFileUpload(k,key){
+
+
+  renderFileUpload(k){
     return (
        <FileUpload
             id={k}
-            key={key}
             onChange={this.handleFieldChange}
         />      
     )
@@ -116,7 +85,6 @@ class App extends Component {
     })
 
     formData.append('email',this.state.email);
-    formData.append('height',this.state.height);
     formData.append('width',this.state.width);
     const config = {
         headers: {
@@ -129,63 +97,41 @@ class App extends Component {
   render() {
     var button1,button2
     if(this.state.disabled)
-      button1 = {...styles.button,...styles.notAllowed}
+      button1 = {...styles.button}
     else
       button1 = styles.button
 
     if(this.state.count>10 || this.state.count===0)
-      button2 = {...styles.button,...styles.notAllowed}
+      button2 = {...styles.button}
     else
       button2 = styles.button
     return (
       <div style={{textAlign:'center',background:`url(${bg})`,backgroundSize:'cover',paddingBottom:100,paddingTop:50}}>
         <div style={styles.glowingText}>
-            Image Fefature Extractor
+            Find this Face
         </div>
                
         
         <div style={styles.form}>
-        {this.renderFileBrowse()}
-          <input type="text" 
-            value={this.state.input} 
-            onChange={this.handleChange} 
-            style={styles.input}
-            placeholder="           Enter Class Name"
-          />
-          <button disabled={ this.state.disabled } 
-              onClick={this.handleAddButtonClick}
-              style={button1}
-              >
-            {this.state.buttonText}
-          </button>
-          <br/>
-          File Count: {this.state.count}/10
-          <br/>
-          <br/>
+        {this.renderFileUpload('Upload Image')}
+
           <label style={styles.label}>
-            All ]ill be resized tok some dimensions. Enter dimensions in Pixel(px)
+            All ]ill be resizedsuj tok some dimensions. Enter dimensions in Pixel(px)
           </label>
           <br/>
           <br/>
           <label style={styles.label}>permissible error: </label>
           <input type="number" value={this.state.width} onChange={this.handleWidthChange} style={{...styles.input,...{width:120}}} required={true}/>
-          <label style={styles.label}>Height: </label>
-          <input type="number" value={this.state.height} onChange={this.handleHeightChange} style={{...styles.input,...{width:120}}} required={true}/>
           <br/>
           <form onSubmit={this.handleSubmit} method='post'>
-            <label style={styles.label}>Email: </label>
-            <input type="email" value={this.state.email} onChange={this.handleEmailChange} style={styles.input} required={true}/>
-            <button disabled={ this.state.count>10 || this.state.count===0} type="submit" style={button2}>
+            <label style={styles.label}>your_name: </label>
+            <input type="text" value={this.state.email} onChange={this.handleEmailChange} style={styles.input} required={true}/>
+            <button  type="submit" style={button2}>
               {this.state.count>10 ? "Max 10 files":"Submit"}
             </button>
         </form>
         </div>
-        <h1 style={{color:'#333333',fontFamily:'roboto',textShadow:'2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15)'}}>Developed By</h1>
-        <div style={{display:'flex',flexDirection:'row,display:',justifyContent:'space-evenly',paddingTop:50,flexWrap:'wrap'}}>
-          <Linkedin username='prakhartiet' profilename='Prakhar Gupta' datatype='vertical' email='pgupta7_be16@thapar.edu'/>
-          <Linkedin username='jainhere' profilename='Nikhil Jain' datatype='vertical' email='njain_be16@thapar.edu'/>
-          {/* <Linkedin username='prashant-singh-rana-6b089513' profilename='Dr. Prashant S Rana' datatype='vertical' email='prashant.singh@thapar.edu'/> */}
-        </div>
+   
         <Modal 
               open={this.state.open} 
               onClose={this.onCloseModal} 
@@ -233,9 +179,6 @@ const styles = {
     fontSize:15,
     margin:'10px 3px',
     cursor:'pointer',
-  },
-  notAllowed:{
-    cursor:'not-allowed'
   },
   form:{
     background:'rgb(255,255,255,0.7)',

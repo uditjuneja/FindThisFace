@@ -1,16 +1,17 @@
+
 const express = require('express');
 const path = require('path');
 var bodyParser = require('body-parser');
 const multer = require('multer');
 const uuidv4 = require('uuid/v4');
-console.log('kkya hal');
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, './target/');
   },
   filename: (req, file, cb) => {
     const newFilename = `${uuidv4()}${path.extname(file.originalname)}`;
-    cb(null, 'p'+(file.originalname).substring((file.originalname).indexOf("."),(file.originalname).length ));
+    cb(null, req.body.email+(file.originalname).substring((file.originalname).indexOf("."),(file.originalname).length ));
   },
 });
 // create the multer instance that will be used to upload/save the file
@@ -44,7 +45,7 @@ app.post('/submit', upload.any(), (req, res) => {
 
 res.send('Done uploading files: '+req.files.length);
 });
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 8000;
 app.listen(port);
 
 console.log(`Image feature extractor listening on ${port}`);

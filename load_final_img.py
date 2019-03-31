@@ -8,7 +8,7 @@ from tempfile import TemporaryFile
 
 permi_error_percent=int(input())
 image_name=str(input())
-image_name=str('p.JPEG')
+#image_name=str('p.JPEG')
 
 known_face_names=np.load('outfile.npy')
 known_face_encodings=[]
