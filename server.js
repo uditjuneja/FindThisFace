@@ -30,21 +30,20 @@ app.use(express.static(path.join(__dirname, './client/build')));
 app.post('/submit', upload.any(), (req, res) => {
 
   console.log('email '+ req.body.email);
-  console.log('height '+req.body.height+' type:'+typeof +req.body.height);
   console.log('width',req.body.width+' type:'+typeof +req.body.width);
-  console.log('file count '+req.files.length);
+  console.log('name with ext',req.body.email+'.'+req.body.fileExt)
 
   let {PythonShell} = require('python-shell')
   var pyshell = new PythonShell('load_final_img.py');
   pyshell.send(req.body.width); // permi error (tolerance)
-  pyshell.send(req.body.email+req.body.fileExt); //image_NAME with (extension)
+  pyshell.send(req.body.email+'.'+req.body.fileExt); //image_NAME with (extension)
   pyshell.on('message', function (message) {
     console.log('result',message);  
   }); 
 
 res.send('Done uploading files: '+req.files.length);
 });
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 app.listen(port);
 
 console.log(`Image feature extractor listening on ${port}`);
