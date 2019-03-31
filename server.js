@@ -10,8 +10,7 @@ const storage = multer.diskStorage({
     cb(null, './target/');
   },
   filename: (req, file, cb) => {
-    const newFilename = `${uuidv4()}${path.extname(file.originalname)}`;
-    cb(null, req.body.email+(file.originalname).substring((file.originalname).indexOf("."),(file.originalname).length ));
+    cb(null, req.body.email+path.extname(file.originalname));
   },
 });
 // create the multer instance that will be used to upload/save the file
@@ -38,7 +37,7 @@ app.post('/submit', upload.any(), (req, res) => {
   let {PythonShell} = require('python-shell')
   var pyshell = new PythonShell('load_final_img.py');
   pyshell.send(req.body.width); // permi error (tolerance)
-  pyshell.send(req.body.email); //image_NAME with (extension)
+  pyshell.send(req.body.email+req.body.fileExt); //image_NAME with (extension)
   pyshell.on('message', function (message) {
     console.log('result',message);  
   }); 

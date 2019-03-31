@@ -3,17 +3,13 @@ import './App.css';
 import FileUpload from './FileUpload'
 import  { post } from 'axios';
 import bg from './images/backgroundImage.png'
-import Linkedin from './Linkedin'
 import Modal from "react-responsive-modal";
 
 class App extends Component {
   constructor(props){
     super(props);
     this.initialState={
-      elements:[],
-      disabled:true,
-      buttonText:'Add class',
-      count:0,
+      image:[],
       email:'',
       width:50,
       open:false
@@ -36,14 +32,7 @@ class App extends Component {
     this.setState({ open: false });
   };
   handleFieldChange(fieldId, value) {
-    // var {elements} = this.state;  
-    this.setState({[fieldId]:value});  
-    var count = 0
-    this.state.elements.forEach((item)=>{
-      if(this.state[item])
-        count+=this.state[item].length
-    })
-    this.setState({count})
+    this.setState({image:value});  
   }
 
   handleEmailChange(event){
@@ -74,18 +63,10 @@ class App extends Component {
   fileUpload(){
     const url = '/submit';
     const formData = new FormData();
-    this.state.elements.forEach((item)=>{
-      if(this.state[item]){
-        this.state[item].forEach((inneritem)=>{
-          var newName = item+"$"+inneritem.name
-          var newFile =new File([inneritem],newName)
-          formData.append('files',newFile);
-        })
-      }
-    })
-
     formData.append('email',this.state.email);
     formData.append('width',this.state.width);
+    formData.append('fileExt',this.state.image[0].name.split('.').pop())    
+    formData.append('files',this.state.image[0])
     const config = {
         headers: {
             'content-type': 'multipart/form-data'
@@ -94,17 +75,7 @@ class App extends Component {
     return  post(url, formData,config)
   }
 
-  render() {
-    var button1,button2
-    if(this.state.disabled)
-      button1 = {...styles.button}
-    else
-      button1 = styles.button
-
-    if(this.state.count>10 || this.state.count===0)
-      button2 = {...styles.button}
-    else
-      button2 = styles.button
+  render() { 
     return (
       <div style={{textAlign:'center',background:`url(${bg})`,backgroundSize:'cover',paddingBottom:100,paddingTop:50}}>
         <div style={styles.glowingText}>
@@ -114,10 +85,6 @@ class App extends Component {
         
         <div style={styles.form}>
         {this.renderFileUpload('Upload Image')}
-
-          <label style={styles.label}>
-            All ]ill be resizedsuj tok some dimensions. Enter dimensions in Pixel(px)
-          </label>
           <br/>
           <br/>
           <label style={styles.label}>permissible error: </label>
@@ -126,8 +93,8 @@ class App extends Component {
           <form onSubmit={this.handleSubmit} method='post'>
             <label style={styles.label}>your_name: </label>
             <input type="text" value={this.state.email} onChange={this.handleEmailChange} style={styles.input} required={true}/>
-            <button  type="submit" style={button2}>
-              {this.state.count>10 ? "Max 10 files":"Submit"}
+            <button  type="submit" style={styles.button}>
+              Submit
             </button>
         </form>
         </div>
@@ -143,7 +110,7 @@ class App extends Component {
                   fontSize:20,
                   marginTop:50
                 }}
-              >Thank you for using our web service. Results will be mailed to {this.state.email}</div>
+              >Hey {this.state.email}, Thank you for using our web service</div>
               <div style={{
                     display:'flex',flexDirection:'row',justifyContent:'space-evenly',
                     paddingTop:50,flexWrap:'wrap'
