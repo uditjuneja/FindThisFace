@@ -4,6 +4,8 @@ import FileUpload from './FileUpload'
 import  { post } from 'axios';
 import bg from './images/backgroundImage.png'
 import Modal from "react-responsive-modal";
+import DisplayResult from './DisplayResult'
+import * as Papa from 'papaparse'
 
 class App extends Component {
   constructor(props){
@@ -12,7 +14,9 @@ class App extends Component {
       image:[],
       email:'',
       width:50,
-      open:false
+      open:false,
+      results:[{name:'NAN',rollno:'NAN'}],
+      csvfile: undefined
     }
     this.state = this.initialState;
     this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -23,6 +27,7 @@ class App extends Component {
     this.handleWidthChange = this.handleWidthChange.bind(this);
     this.onOpenModal=this.onOpenModal.bind(this);
     this.onCloseModal=this.onCloseModal.bind(this);
+    this.updatecsvdata= this.updatecsvdata.bind(this);
   }
   onOpenModal = () => {
     this.setState({ open: true });
@@ -54,10 +59,15 @@ class App extends Component {
   handleSubmit(event) {
     //console.log(this.state);
     event.preventDefault();
-    this.onOpenModal();
+    //this.onOpenModal();
+   
+    
+
     this.fileUpload().then((response)=>{
       console.log('Response is: \n'+ response.data);
-    })
+      return this.readcsvfile();
+      
+    }).then(()=>{ console.log('result are show ');} )
   }
 
   fileUpload(){
@@ -74,7 +84,32 @@ class App extends Component {
     }
     return  post(url, formData,config)
   }
-
+  // readcsvfile(){
+  //   let reader=new FileReader();
+  //   reader.readAsText("./result_csv.csv");
+  //   console.log('reader',reader);
+  // }
+readcsvfile(){
+  var csvFilePath = require("./result_csv.csv");
+  console.log('i am in readcsv');
+  Papa.parse(csvFilePath, {
+    header: true,
+    download: true,
+    skipEmptyLines: true,
+    // Here this is also available. So we can call our custom class method
+    complete: this.updatecsvdata
+  });
+}
+  updatecsvdata(result) {
+    console.log(result);
+    var data = result.data;
+    console.log('data',data);
+    console.log('data_0',data[0]);
+    this.setState({
+      results:data
+    });
+  }
+  
   render() { 
     return (
       <div style={{textAlign:'center',background:`url(${bg})`,backgroundSize:'cover',paddingBottom:100,paddingTop:50}}>
@@ -93,9 +128,12 @@ class App extends Component {
           <form onSubmit={this.handleSubmit} method='post'>
             <label style={styles.label}>your_name: </label>
             <input type="text" value={this.state.email} onChange={this.handleEmailChange} style={styles.input} required={true}/>
+            <br/>
             <button  type="submit" style={styles.button}>
               Submit
-            </button>
+            </button><br/>
+            <DisplayResult results={this.state.results}/>
+     
         </form>
         </div>
    

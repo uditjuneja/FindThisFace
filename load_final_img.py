@@ -54,6 +54,6 @@ for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodi
           x_co=left
           y_co=bottom+10+total*33
           total=total+1
-os.remove(image_name)  # after all processing, delete users file
+#os.remove(image_name)  # after all processing, delete users file
                 
 
