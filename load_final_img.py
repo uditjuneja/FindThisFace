@@ -41,14 +41,15 @@ for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodi
   matches = face_recognition.compare_faces(known_face_encodings, face_encoding,tolerance=permi_error_percent/100.0)
 
 
-  print('MATCHES-FOUND-WITH:')
+  #print('MATCHES-FOUND-WITH:')
 
   total=0
 
   for i in range(0,len(matches)):
       if(matches[i]==True):
-          print('Name: ',person[known_face_names[i]][1])
-          print('Rollno: ',person[known_face_names[i]][0])
+          #print('Name: ',person[known_face_names[i]][1])
+          #print('Rollno: ',person[known_face_names[i]][0])
+          print(person[known_face_names[i]][1],person[known_face_names[i]][0])
           name=str(person[known_face_names[i]][1])
           roll=str(person[known_face_names[i]][0])
           x_co=left
