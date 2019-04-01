@@ -5,7 +5,7 @@ import  { post } from 'axios';
 import bg from './images/backgroundImage.png'
 import Modal from "react-responsive-modal";
 import DisplayResult from './DisplayResult'
-import * as Papa from 'papaparse'
+
 
 class App extends Component {
   constructor(props){
@@ -64,10 +64,12 @@ class App extends Component {
     
 
     this.fileUpload().then((response)=>{
+      this.setState({
+        results:response.data
+      });
       console.log('Response is: \n'+ response.data);
-      return this.readcsvfile();
-      
-    }).then(()=>{ console.log('result are show ');} )
+      //return this.readcsvfile();
+      })
   }
 
   fileUpload(){
@@ -89,26 +91,24 @@ class App extends Component {
   //   reader.readAsText("./result_csv.csv");
   //   console.log('reader',reader);
   // }
-readcsvfile(){
-  var csvFilePath = require("./result_csv.csv");
-  console.log('i am in readcsv');
-  Papa.parse(csvFilePath, {
-    header: true,
-    download: true,
-    skipEmptyLines: true,
-    // Here this is also available. So we can call our custom class method
-    complete: this.updatecsvdata
-  });
-}
-  updatecsvdata(result) {
-    console.log(result);
-    var data = result.data;
-    console.log('data',data);
-    console.log('data_0',data[0]);
-    this.setState({
-      results:data
-    });
-  }
+// readcsvfile(){
+//   var csvFilePath = require("./result_csv.csv");
+//   console.log('i am in readcsv');
+//   Papa.parse(csvFilePath, {
+//     header: true,
+//     download: true,
+//     skipEmptyLines: true,
+//     // Here this is also available. So we can call our custom class method
+//     complete: this.updatecsvdata
+//   });
+// }
+  // updatecsvdata(result) {
+  //   console.log(result);
+  //   var data = result.data;
+  //   this.setState({
+  //     results:data
+  //   });
+  // }
   
   render() { 
     return (
