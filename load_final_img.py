@@ -8,6 +8,9 @@ from tempfile import TemporaryFile
 import os
 permi_error_percent=int(input())
 image_name=str(input())
+
+#print(image_name[image_name.index('.')+1:])
+
 #image_name=str('p.JPEG')
 
 known_face_names=np.load('outfile.npy')
@@ -22,9 +25,15 @@ known_face_encodings =faces_encoding
 
 
 # Grab a single frame of video
-frame = Image.open('./target/'+image_name)
+if(image_name[image_name.index('.')+1:]=='png'):
+    im = Image.open('./target/'+image_name)
+    frame= im.convert('RGB')
+else:
+    frame = Image.open('./target/'+image_name)
+
 
 # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
+
 b, g, r = frame.split()
 rgb_frame= Image.merge("RGB", (r, g, b))
 
