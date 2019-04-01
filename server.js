@@ -32,7 +32,7 @@ app.post('/submit', upload.any(), (req, res) => {
   console.log('permi error: ',req.body.width);
   var results=[{name:'NAN',rollno:'NAN'}]
   let {PythonShell} = require('python-shell')
-  var pyshell = new PythonShell('node_final_img.py');
+  var pyshell = new PythonShell('load_final_img.py');
   console.log('pyshell was called');
  
   
