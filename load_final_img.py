@@ -6,6 +6,8 @@ from PIL import Image
 import numpy as np
 from tempfile import TemporaryFile
 import os
+
+result_=''
 permi_error_percent=int(input())
 image_name=str(input())
 
@@ -53,17 +55,26 @@ for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodi
   #print('MATCHES-FOUND-WITH:')
 
   total=0
-
-  for i in range(0,len(matches)):
+  if(len(matches)>0):
+   for i in range(0,len(matches)):
       if(matches[i]==True):
           #print('Name: ',person[known_face_names[i]][1])
           #print('Rollno: ',person[known_face_names[i]][0])
-          print(person[known_face_names[i]][1],person[known_face_names[i]][0])
+          name_= (person[known_face_names[i]][1]).replace(" ", "_")
+          roll_no=person[known_face_names[i]][0]
+          
+          result_=result_+name_+' '+str(roll_no)+'x'
+          print(name_,roll_no)
           name=str(person[known_face_names[i]][1])
           roll=str(person[known_face_names[i]][0])
           x_co=left
           y_co=bottom+10+total*33
           total=total+1
+   result_=result_[:-1]
+   print(result_)
+  else:
+       print('NaN','NaN')
+
 #os.remove(image_name)  # after all processing, delete users file
                 
 
