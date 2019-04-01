@@ -31,7 +31,7 @@ app.post('/submit', upload.any(), (req, res) => {
   console.log('email '+ req.body.email);
   console.log('width',req.body.widt);
   console.log('name with ext',req.body.email)
-  var results=[{name:'a','rollno':8}]
+  var results=[{name:'NAN',rollno:'NAN'}]
   let {PythonShell} = require('python-shell')
   var pyshell = new PythonShell('load_final_img.py');
   
@@ -42,8 +42,15 @@ app.post('/submit', upload.any(), (req, res) => {
   pyshell.on('message', function (message) {
   
     s=message.split(" ");
+    if(s.length>2){
+      results.push({name:(s[0]).concat(s[1]),rollno:s[2]});
+    }
+    else{
+      results.push({name:s[0],rollno:s[1]});
+    }
 
-    results.push({name:s[0],rollno:s[1]});
+
+    
  }); 
   
 
