@@ -28,8 +28,8 @@ app.use(express.static(path.join(__dirname, './client/build')));
 
 app.post('/submit', upload.any(), (req, res) => {
 
-  console.log('email '+ req.body.email);
-  console.log('width',req.body.widt);
+  console.log('file name'+ req.body.email+'.'+((req.body.fileExt).toString()).toLowerCase());
+  console.log('width',req.body.width);
   console.log('name with ext',req.body.email)
   var results=[{name:'NAN',rollno:'NAN'}]
   let {PythonShell} = require('python-shell')
@@ -38,7 +38,7 @@ app.post('/submit', upload.any(), (req, res) => {
  
   
   pyshell.send(req.body.width); // permi error (tolerance)
-  pyshell.send(req.body.email+'.'+req.body.fileExt); //image_NAME with (extension)
+  pyshell.send(req.body.email+'.'+((req.body.fileExt).toString()).toLowerCase()); //image_NAME with (extension)
   pyshell.on('message', function (message) {
   
     s=message.split(" ");
