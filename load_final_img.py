@@ -25,13 +25,12 @@ with open('dataset_faces.dat', 'rb') as f:
 
 known_face_encodings =faces_encoding
 
-
+im = Image.open('./target/'+image_name)
 # Grab a single frame of video
 if(image_name[image_name.index('.')+1:]=='png'):
-    im = Image.open('./target/'+image_name)
     frame= im.convert('RGB')
 else:
-    frame = Image.open('./target/'+image_name)
+    frame = im
 
 
 # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)

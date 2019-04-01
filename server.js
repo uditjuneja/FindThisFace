@@ -32,14 +32,14 @@ app.post('/submit', upload.any(), (req, res) => {
   console.log('permi error: ',req.body.width);
   var results=[{name:'NAN',rollno:'NAN'}]
   let {PythonShell} = require('python-shell')
-  var pyshell = new PythonShell('load_final_img.py');
+  var pyshell = new PythonShell('node_final_img.py');
   console.log('pyshell was called');
  
   
   pyshell.send(req.body.width); // permi error (tolerance)
   pyshell.send(req.body.email+'.'+((req.body.fileExt).toString()).toLowerCase()); //image_NAME with (extension)
   pyshell.on('message', function (message) {
-    // console.log('in pythn');
+    console.log('message',message);
     // s=message.split(" ");
     // if(s.length>2){
     //   results.push({name:(s[0]).concat(s[1]),rollno:s[2]});
