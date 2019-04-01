@@ -63,8 +63,8 @@ for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodi
           name_= (person[known_face_names[i]][1]).replace(" ", "_")
           roll_no=person[known_face_names[i]][0]
           
-          result_=result_+name_+' '+str(roll_no)+'x'
-          print(name_,roll_no)
+          result_=result_+name_+' '+str(roll_no)+' '
+          #print(name_,roll_no)
           name=str(person[known_face_names[i]][1])
           roll=str(person[known_face_names[i]][0])
           x_co=left
