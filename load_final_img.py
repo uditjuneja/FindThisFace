@@ -27,7 +27,7 @@ known_face_encodings =faces_encoding
 
 im = Image.open('./target/'+image_name)
 # Grab a single frame of video
-if(image_name[image_name.index('.')+1:]=='png'):
+if(image_name[image_name.index('.')+1:]=='PNG'):
     frame= im.convert('RGB')
 else:
     frame = im

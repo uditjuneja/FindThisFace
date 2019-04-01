@@ -20,7 +20,7 @@ class FileUpload extends Component {
   render() {
     return (
         <div style={{textAlign:'center',flex: '1',minWidth:'45vw',padding:15}}>
-            <h1>{this.props.id}</h1>
+           
             <FilePond ref={ref => this.pond = ref}
                 allowMultiple={false}
                 acceptedFileTypes={['image/*']}

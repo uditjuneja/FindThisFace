@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import FileUpload from './FileUpload'
 import  { post } from 'axios';
-import bg from './images/backgroundImage.png'
+//import bg from './images/backgroundImage.png'
 import Modal from "react-responsive-modal";
 import DisplayResult from './DisplayResult'
 
@@ -16,6 +16,7 @@ class App extends Component {
       width:50,
       open:false,
       results:[{name:'NAN',rollno:'NAN'}],
+      year:'second',
      
     }
     this.state = this.initialState;
@@ -112,26 +113,30 @@ class App extends Component {
   
   render() { 
     return (
-      <div style={{textAlign:'center',background:`url(${bg})`,backgroundSize:'cover',paddingBottom:100,paddingTop:50}}>
+      <div style={{textAlign:'center',backgroundColor:'white',backgroundSize:'cover',paddingBottom:100,paddingTop:50}}>
         <div style={styles.glowingText}>
             Find this Face
         </div>
                
         
         <div style={styles.form}>
-        {this.renderFileUpload('Upload Image')}
-          <br/>
-          <br/>
-          <label style={styles.label}>permissible error: </label>
-          <input type="number" value={this.state.width} onChange={this.handleWidthChange} style={{...styles.input,...{width:120}}} required={true}/>
-          <br/>
+                {this.renderFileUpload('Upload Image')} <br/>
+      
+         
+          
+          <label style={styles.label}>Tolerance : </label> 
+          <input type="number" value={this.state.width} onChange={this.handleWidthChange} style={{...styles.input,...{width:120}}} required={true}/><pr>%</pr>
+       
+         <p> (the more it is , less is the number of predicted results)</p>
           <form onSubmit={this.handleSubmit} method='post'>
             <label style={styles.label}>your_name: </label>
-            <input type="text" value={this.state.email} onChange={this.handleEmailChange} style={styles.input} required={true}/>
-            <br/>
+            <input type="text" value={this.state.email} onChange={this.handleEmailChange} style={styles.input} required={true}/><pr>(No Spaces)</pr>
+            <br/><br/>
+            <b> Developed By : Prayag Lehana</b><br/><br/>
             <button  type="submit" style={styles.button}>
-              Submit
+              Find Matches
             </button><br/>
+            <label>--- Matches Found With ---</label>
             <DisplayResult results={this.state.results}/>
      
         </form>
