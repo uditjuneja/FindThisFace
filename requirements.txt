@@ -1,4 +1,3 @@
-csv
 cmake
 dlib
 face_recognition
