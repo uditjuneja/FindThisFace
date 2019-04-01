@@ -9,8 +9,10 @@ import os
 
 result_=''
 permi_error_percent=int(input())
-year = int(input())
+year = 3
 image_name=str(input())
+
+
 
 #print(image_name[image_name.index('.')+1:])
 
@@ -18,9 +20,9 @@ image_name=str(input())
 
 known_face_names=np.load('outfile.npy')
 known_face_encodings=[]
-if(year==3):
- dataset = pd.read_csv('second_year_thapar.csv',header=None)
-elif(year==2):
+
+dataset = pd.read_csv('third_year_thapar.csv',header=None)
+
 person = dataset.iloc[0:,0:5].values
 
 with open('dataset_faces.dat', 'rb') as f:
