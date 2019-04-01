@@ -37,7 +37,7 @@ app.post('/submit', upload.any(), (req, res) => {
  
   
   pyshell.send(req.body.width); // permi error (tolerance)
-  pyshell.send(req.body.email+'.'+((req.body.fileExt).toString()).toLowerCase()); //image_NAME with (extension)
+  pyshell.send(req.body.email+'.'+((req.body.fileExt).toString())); //image_NAME with (extension)
   pyshell.on('message', function (message) {
     console.log('message',message);
     // s=message.split(" ");
