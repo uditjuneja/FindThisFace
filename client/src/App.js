@@ -17,6 +17,7 @@ class App extends Component {
       open:false,
       results:[{name:'NAN',rollno:'NAN'}],
       year:'second',
+      processing:'Idle  ... zzz'
      
     }
     this.state = this.initialState;
@@ -60,14 +61,21 @@ class App extends Component {
   handleSubmit(event) {
     //console.log(this.state);
     event.preventDefault();
+    this.setState({
+   
+      processing:'Processing  ...'
+    });
+
     //this.onOpenModal();
    
     
 
     this.fileUpload().then((response)=>{
       this.setState({
-        results:response.data
+        results:response.data,
+        processing:'Done !!'
       });
+      
       console.log('Response is: \n'+ response.data);
       //return this.readcsvfile();
       })
@@ -127,7 +135,7 @@ class App extends Component {
           <label style={styles.label}>Tolerance : </label> 
           <input type="number" value={this.state.width} onChange={this.handleWidthChange} style={{...styles.input,...{width:120}}} required={true}/><pr>%</pr>
        
-         <p> (the more it is , less is the number of predicted results)</p>
+         <p> (the more it is , more is the number of predicted results)</p>
           <form onSubmit={this.handleSubmit} method='post'>
             <label style={styles.label}>your_name: </label>
             <input type="text" value={this.state.email} onChange={this.handleEmailChange} style={styles.input} required={true}/><pr>(No Spaces)</pr>
@@ -136,8 +144,11 @@ class App extends Component {
             <button  type="submit" style={styles.button}>
               Find Matches
             </button><br/>
-            <label>--- Matches Found With ---</label>
+            <label>State : {this.state.processing}</label><br/>
+            <label> Matches Found With </label>
+            
             <DisplayResult results={this.state.results}/>
+            
      
         </form>
         </div>
