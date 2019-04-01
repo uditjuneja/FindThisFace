@@ -16,7 +16,7 @@ class App extends Component {
       width:50,
       open:false,
       results:[{name:'NAN',rollno:'NAN'}],
-      csvfile: undefined
+     
     }
     this.state = this.initialState;
     this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -27,7 +27,7 @@ class App extends Component {
     this.handleWidthChange = this.handleWidthChange.bind(this);
     this.onOpenModal=this.onOpenModal.bind(this);
     this.onCloseModal=this.onCloseModal.bind(this);
-    this.updatecsvdata= this.updatecsvdata.bind(this);
+
   }
   onOpenModal = () => {
     this.setState({ open: true });
