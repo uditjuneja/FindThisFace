@@ -63,7 +63,7 @@ class App extends Component {
     event.preventDefault();
     this.setState({
    
-      processing:'Processing  ...'
+      processing:'Processing  ... Please wait !'
     });
 
     //this.onOpenModal();
